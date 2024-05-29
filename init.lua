@@ -37,3 +37,19 @@ require "nvchad.autocmds"
 vim.schedule(function()
   require "mappings"
 end)
+
+local function open_nvim_tree()
+  require("nvim-tree.api").tree.open()
+end
+
+vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })
+
+local format_sync_grp = vim.api.nvim_create_augroup("GoFormat", {})
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*.go",
+  callback = function()
+    require("go.format").goimports()
+  end,
+  group = format_sync_grp,
+})
